@@ -1,5 +1,6 @@
 #!/bin/bash
 # Ralph Wiggum - Long-running AI agent loop
+# Uses Cursor's agent CLI: https://cursor.com/docs/cli/headless
 # Usage: ./ralph.sh [max_iterations]
 
 set -e
@@ -59,8 +60,9 @@ for i in $(seq 1 $MAX_ITERATIONS); do
   echo "  Ralph Iteration $i of $MAX_ITERATIONS"
   echo "═══════════════════════════════════════════════════════"
   
-  # Run amp with the ralph prompt
-  OUTPUT=$(cat "$SCRIPT_DIR/prompt.md" | amp --dangerously-allow-all 2>&1 | tee /dev/stderr) || true
+  # Run Cursor agent with the ralph prompt
+  PROMPT=$(cat "$SCRIPT_DIR/prompt.md")
+  OUTPUT=$(agent -p --force "$PROMPT" 2>&1 | tee /dev/stderr) || true
   
   # Check for completion signal
   if echo "$OUTPUT" | grep -q "<promise>COMPLETE</promise>"; then
